@@ -1,0 +1,237 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\emergencystretch=3em
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newcommand{\ceil}[1]{\left\lceil #1\right\rceil}
+\title{The bridge and torch problem with crossing times $1,2,\dots,n$:\\ a closed formula for every bridge capacity}
+\author{Uchral Nyam-Osor\thanks{Proposed the research direction: find a recently published open problem and try to solve it.} \and Claude (Anthropic AI model)\thanks{Chose the problem, did the mathematics and the computations, and wrote this note. Contact: Uchral Nyam-Osor, \texttt{gameruchral71@gmail.com}.}}
+\date{18 October 2026\\ \small Draft, not peer reviewed.}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+People $1,2,\dots,n$ must cross a bridge at night. Person $i$ needs $i$ minutes, at most $c$ people may be on the bridge at once, a group walks at the pace of its slowest member, and the single torch must be carried on every crossing. Let $T_c(n)$ be the least total time. Rote's formula gives $T_2(n)$, and Thang Pang Ern and Sayson (J.\ Integer Seq.\ 29 (2026), arXiv:2608.05190) recently found $T_3(n)$. For capacity $4$ they listed $T_4(n)$ for $n\le 20$ and conjectured that for each small $c$ there is a short closed formula or a recurrence of bounded order. We prove this for every $c\ge 3$. Writing $n+3=gc+d$ with $0\le d<c$, we show
+\[
+T_c(n)=\frac{c\,g(g+1)}{2}+(g+1)d-10+\ceil{\frac{3g+\max(0,\,d-c+3)}{2}}
+\]
+for all $n\ge 5c-5$ (for $c=3$, all $n\ge 7$). Equivalently, $T_c(n)=T_c(n-2c)+2n-c+9$, and $T_c(n)$ is a quasi-polynomial of period $2c$ with leading term $n^2/(2c)$. The lower bound comes from an explicit system of weights on the people (a dual solution of a linear program): every group of at most $c$ people has total weight at most its crossing time plus $9/2$. The upper bound comes from explicit schedules in which the three fastest people run the torch back. For $c=3$ the formula agrees with Thang Pang Ern and Sayson's theorem.
+\end{abstract}
+
+\section{The problem and the result}
+
+There are $n$ people on one side of a bridge; person $i$ takes $i$ minutes to cross. A \emph{forward trip} takes a group of at most $c$ people from the start side to the far side, and a \emph{return trip} takes a group back. Trips alternate, starting and ending with a forward trip, the torch goes with every trip, and a trip takes as long as its slowest member. Let $T_c(n)$ be the least total time to get everyone across. If $n\le c$ then $T_c(n)=n$ (everyone walks together).
+
+\paragraph{Known results.} For $c=2$, $T_2(n)=\lfloor (n^2+12n-20)/4\rfloor$ for $n\ge2$; this follows from Rote's analysis of the two-person bridge~\cite{rote} and is OEIS A078476. For $c=3$, Thang Pang Ern and Sayson~\cite{pes} proved
+$T_3(n)=n^2/6+2n-181/36+(-1)^n/4-(2/9)\cos(2n\pi/3)$ for $n\ge7$ (OEIS A392834). For general crossing times and general capacity, Backhouse and Truong~\cite{bt08,bt15} gave a polynomial algorithm. For capacity $4$, Thang Pang Ern and Sayson computed
+\[
+T_4(1),\dots,T_4(20)=1,2,3,4,8,10,12,17,20,23,28,32,36,42,47,52,58,64,70,77
+\]
+by complete search, and wrote that what remains open is whether a short closed formula or a recurrence of bounded order exists for consecutive crossing times; they conjectured that it does for each small $c$, by analogy with the period-$6$ quadratic for $c=3$ (\cite{pes}, Example~23 and the remark after it).
+
+\paragraph{Our result.} Throughout, for $n\ge1$ write
+\[
+n+3=gc+d,\qquad 0\le d\le c-1,
+\]
+and put
+\begin{equation}\label{eq:F}
+F_c(n)=\frac{c\,g(g+1)}{2}+(g+1)d-10+\ceil{\frac{3g+(d-c+3)^+}{2}},\qquad x^+=\max(x,0).
+\end{equation}
+
+\begin{theorem}\label{thm:main}
+Let $c\ge3$. Then $T_c(n)=F_c(n)$ for all $n\ge n_c$, where $n_3=7$ and $n_c=5c-5$ for $c\ge4$.
+\end{theorem}
+
+\begin{corollary}\label{cor:rec}
+Let $c\ge3$. For $n\ge n_c+2c$,
+\[
+T_c(n)=T_c(n-2c)+2n-c+9 .
+\]
+Hence $2c\,T_c(n)-n^2-(c+9)n$ depends only on $n \bmod 2c$ for $n\ge n_c$, i.e.\ $T_c(n)=\bigl(n^2+(c+9)n+G_c(n\bmod 2c)\bigr)/(2c)$ for a finite table $G_c$.
+\end{corollary}
+
+\begin{proof}
+Replacing $n$ by $n+2c$ replaces $g$ by $g+2$ and keeps $d$. Then $F_c$ grows by $c(2g+3)+2d+3=2(n+2c)-c+9$, and $(n+2c)^2+(c+9)(n+2c)-n^2-(c+9)n=2c\bigl(2n+3c+9\bigr)$.
+\end{proof}
+
+\begin{corollary}[capacity 4]\label{cor:c4}
+For $n\ge15$,
+\[
+T_4(n)=\frac{n^2+13n+G(n\bmod 8)}{8},
+\]
+where $(G(0),\dots,G(7))=(-48,-46,-46,-48,-44,-50,-50,-44)$,
+and $T_4(n)=T_4(n-8)+2n+5$ for $n\ge23$. The first values are $1,2,3,4,8,10,12,17,20,23,28,32,36,42$ for $n\le14$, then $47,52,58,64,70,77,83,90,98,105,113,121,129,138,146,155,\dots$
+\end{corollary}
+
+For $c=5$ and $c=6$ the tables are $G_5=(-60,-65,-62,-61,-62,-65,-60,-67,-66,-67)$ for $n\ge20$ and $G_6=(-84,-76,-82,-78,-76,-76,-78,-82,-76,-84,-82,-82)$ for $n\ge25$ (residues $0,1,2,\dots$).
+
+\begin{remark}
+For $c=3$, \eqref{eq:F} agrees with Thang Pang Ern and Sayson's formula for every $n\ge7$ (checked for $7\le n\le 400$; both sides satisfy $T(n)=T(n-6)+2n+6$). For $c=2$ the formula does not apply; there the torch is run back by two people, and each pair of slow people costs $5$ extra minutes instead of $9/2$.
+\end{remark}
+
+\begin{remark}
+The threshold is sharp in our computations: for $4\le c\le 40$ we have $T_c(5c-6)>F_c(5c-6)$. For $n<n_c$ the lower bound of Theorem~\ref{thm:lower} still holds but is not attained.
+\end{remark}
+
+\paragraph{Where $9/2$ comes from.} For large $n$ an optimal schedule looks like this: people $1,2,3$ cross together ($3$ minutes), $1$ returns ($1$), the $c$ slowest cross ($n$), $2$ returns ($2$), the next $c$ slowest cross ($n-c$), $3$ returns ($3$). This moves $2c$ slow people for $(n)+(n-c)+9$ minutes: each group of $c$ slow people pays its own slowest time plus $9/2$. This cycle gives the upper bound in Corollary~\ref{cor:rec}. All the work is in proving that nothing better is possible and in handling the fastest $\approx 5c$ people at the bottom.
+
+\section{The lower bound: weights}
+
+\begin{lemma}[weights give lower bounds]\label{lem:dual}
+Let $w_1,\dots,w_n$ be real numbers such that for every group $G\subseteq\{1,\dots,n\}$ with $1\le|G|\le c$,
+\begin{align}
+\textstyle\sum_{i\in G} w_i&\le \max G+\tfrac92, \label{eq:fwd}\\
+\textstyle\sum_{i\in G} w_i&\ge \tfrac92-\max G. \label{eq:ret}
+\end{align}
+Then every schedule takes at least $\sum_{i=1}^n w_i-\frac92$ minutes.
+\end{lemma}
+
+\begin{proof}
+Let the forward trips be $F_1,\dots,F_m$ and the return trips $R_1,\dots,R_{m-1}$. Each person crosses forward exactly once more than back, so
+$\sum_i w_i=\sum_{j=1}^m\sum_{i\in F_j}w_i-\sum_{j=1}^{m-1}\sum_{i\in R_j}w_i$. By \eqref{eq:fwd} and \eqref{eq:ret} this is at most $\sum_j(\max F_j+\frac92)-\sum_j(\frac92-\max R_j)$, which is the total time plus $\frac92$.
+\end{proof}
+
+(Lemma~\ref{lem:dual} is weak duality for the linear program whose variables count how often each group crosses in each direction; the weights below were found by solving that program numerically and then guessing the pattern.)
+
+\paragraph{The weights.} Let $u_1=\frac72$, $u_2=\frac52$, $u_3=\frac32$, and let $u_4,u_5,\dots$ be the sequence obtained by writing, for $g=1,2,3,\dots$ in turn, the value $g$ repeated $c-3$ times followed by the value $g+\frac12$ repeated $\min(g-1,3)$ times:
+\[
+\underbrace{1,\dots,1}_{c-3},\ \underbrace{2,\dots,2}_{c-3},\tfrac52,\ \underbrace{3,\dots,3}_{c-3},\tfrac72,\tfrac72,\ \underbrace{4,\dots,4}_{c-3},\tfrac92,\tfrac92,\tfrac92,\ \underbrace{5,\dots,5}_{c-3},\tfrac{11}2,\tfrac{11}2,\tfrac{11}2,\ \dots
+\]
+For $g\ge4$ the block of value $g$ and $g+\frac12$ occupies the $c$ positions $(g-1)c-2,\dots,gc-3$. Let $U_c(n)=\sum_{i=4}^n u_i$.
+
+\begin{lemma}\label{lem:feasible}
+For every $c\ge3$ and $n\ge1$, the weights $u_1,\dots,u_n$ satisfy \eqref{eq:fwd} and \eqref{eq:ret}.
+\end{lemma}
+
+\begin{theorem}\label{thm:lower}
+For every $c\ge3$ and $n\ge 4$, $T_c(n)\ge 3+\ceil{U_c(n)}$.
+\end{theorem}
+
+\begin{proof}
+By Lemmas~\ref{lem:dual} and~\ref{lem:feasible}, $T_c(n)\ge \frac72+\frac52+\frac32+U_c(n)-\frac92$, and $T_c(n)$ is an integer.
+\end{proof}
+
+\begin{lemma}\label{lem:U}
+If $n\ge 3c-3$ and $n+3=gc+d$ with $0\le d<c$, then
+$U_c(n)=\frac{c\,g(g+1)}{2}+\frac{3g}{2}-13+(g+1)d+\frac{(d-c+3)^+}{2}$. Consequently $3+\ceil{U_c(n)}=F_c(n)$.
+\end{lemma}
+
+\begin{proof}
+The first three blocks contribute $(c-3)+(2(c-3)+\frac52)+(3(c-3)+7)=6c-\frac{17}2$, and the block $h\ge4$ contributes $h(c-3)+3(h+\frac12)=hc+\frac32$. Summing up to the end of block $g$ (position $gc-3$) gives $\frac{c g(g+1)}2+\frac{3g}2-13$. The remaining $d$ positions lie in block $g+1$; the first $c-3$ of them have value $g+1$ and the rest $g+\frac32$.
+\end{proof}
+
+\begin{proof}[Proof of Lemma~\ref{lem:feasible}]
+\emph{Return inequality \eqref{eq:ret}.} All $u_i\ge0$, and $u_i\ge\frac92-i$ for $i\le4$ ($u_4=1$ if $c\ge4$, $u_4=\frac52$ if $c=3$). So $\sum_{G}u\ge u_{\max G}\ge\frac92-\max G$.
+
+\emph{Forward inequality \eqref{eq:fwd}.} Let $M=\max G$. If $M\le3$ the claim is checked directly ($\frac72\le\frac{11}2$, $6\le\frac{13}2$, $\frac{15}2\le\frac{15}2$). Let $M\ge4$ and write $G=J\cup S$ with $J\subseteq\{1,2,3\}$, $j=|J|$, and $S\subseteq\{4,\dots,M\}$, $M\in S$, $|S|\le c-j$. Since $u_1>u_2>u_3$, $\sum_J u\le\sigma_j$ where $\sigma_0=0,\sigma_1=\frac72,\sigma_2=6,\sigma_3=\frac{15}2$. Since $u$ is nondecreasing from position $4$ on and nonnegative, $\sum_S u\le U_c(M)-U_c(\max(3,M-c+j))$ (with $U_c(x)=0$ for $x\le3$). So it suffices to prove, for $0\le j\le\min(3,c-1)$ and all $M\ge4$,
+\begin{equation}\label{eq:window}
+U_c(M)-U_c(\max(3,M-c+j))\le M+\tfrac92-\sigma_j .
+\end{equation}
+Let $\tilde u$ be the periodic extension of the pattern of blocks $g\ge4$ to all integers: $\tilde u_i=g$ if $(g-1)c-2\le i\le gc-6$ and $\tilde u_i=g+\frac12$ if $gc-5\le i\le gc-3$, for every integer $g$. Since $\tilde u_{i+c}=\tilde u_i+1$ and a full block sums to $gc+\frac32$, every $c$ consecutive values of $\tilde u$ ending at position $M$ sum to exactly $M+\frac92$. Put $u_i=0$ for $i\le3$ and $\delta_i=\tilde u_i-u_i$. Then $\delta_i=0$ for $i\ge3c-4$, and one checks from the definitions that $\delta_i\ge0$ for all $i\ge 5-c$ (for $c\ge4$ the nonzero values on $i\ge4$ are $\frac12$ on $[c-5,c-3]$, $1$ on $[c-2,c]$, $\frac12$ on $[2c-5,2c-2]$ and $\frac12$ at $3c-5$; for $i\le3$, $\delta_i=\tilde u_i\ge0$). With $a=M-c+1$, \eqref{eq:window} becomes
+\begin{equation}\label{eq:Q}
+Q_j(a):=\sum_{i=a}^{a+j-1}\tilde u_i+\sum_{i=a+j}^{a+c-1}\delta_i\ \ge\ \sigma_j .
+\end{equation}
+For $j=0$ this is $\delta\ge0$. For $a\ge 3c-5$ it holds because $\tilde u_i\ge\frac72$ there and $\frac72 j\ge\sigma_j$. So only $5-c\le a\le 3c-6$ and $j\in\{1,2,3\}$ remain.
+
+For $c\ge21$ the inequality does not depend on $c$ in an essential way: as $a$ increases by one, $Q_j$ changes only when one of $a$, $a+j$, $a+c$ is within a bounded distance of one of the points $\alpha c+\beta$ ($\alpha\in\{-1,0,1,2,3\}$, $|\beta|\le 6$) where $\tilde u$ or $\delta$ changes, and the size of the change depends only on $(\alpha,\beta)$. For $c\ge 21$ these clusters of points are disjoint and occur in the same order for every $c$, and $Q_j(5-c)=\frac{15}2$ for every such $c$. Hence the sequence of values taken by $Q_j(a)$, $5-c\le a\le 3c-6$, is the same for all $c\ge21$ (only the lengths of the constant stretches change), and it suffices to check one $c\ge21$. We verified \eqref{eq:Q} with exact rational arithmetic for every $4\le c\le 300$ and every $a$ in the range (\texttt{qtable.py}); the minimum of $Q_j-\sigma_j$ is $0$ for all $j$ and $c$. For $c=3$ we verified \eqref{eq:fwd} and \eqref{eq:ret} directly for all groups with $\max G\le 30$, which covers all windows not in the periodic range (\texttt{verify\_dual.py}, which also checks all groups directly for $3\le c\le16$ and $n\le10c$).
+\end{proof}
+
+\begin{remark}
+A hand check of \eqref{eq:Q} for $c\ge10$ is also short. For example, for $j=1$: if $a\le c-6$ the window $[a+1,a+c-1]$ contains $[c-5,c]$, where $\delta$ has total $\frac92$; if $c-5\le a\le c-3$ it contains $[c-2,c]$ (total $3$) and $\tilde u_a=\frac32$; if $c-2\le a\le 2c-6$, then $\tilde u_a=2$ and the window contains at least $\frac32$ of $\delta$ from $[c-1,c]\cup[2c-5,2c-2]$; if $2c-5\le a\le 2c-3$, then $\tilde u_a=\frac52$ and the window contains $\delta_{2c-2}+\delta_{3c-5}=1$ or more; and if $2c-2\le a\le 3c-6$, then $\tilde u_a=3$ and the window contains $\delta_{3c-5}=\frac12$. In every case $Q_1\ge\frac72$. The cases $j=2,3$ are similar.
+\end{remark}
+
+\section{The upper bound: schedules}
+
+We use the following facts from Backhouse and Truong~\cite{bt15}. Call a multiset $\mathcal F$ of groups a \emph{bag} if every group has between $2$ and $c$ people, every person is in at least one group, and $\sum_{G\in\mathcal F}(|G|-1)=n-1$. Let $f_i$ be the number of groups containing $i$.
+
+\begin{lemma}[Backhouse--Truong {\cite[Theorem~1]{bt15}}]\label{lem:bt}
+For every bag $\mathcal F$ there is a schedule whose forward trips are exactly the groups of $\mathcal F$ and whose return trips are single people; person $i$ returns $f_i-1$ times. Its total time is $\sum_{G\in\mathcal F}\max G+\sum_i i(f_i-1)$.
+\end{lemma}
+
+(In \cite{bt15} the condition is written $|\mathcal F|=\sum_i(f_i-1)+1$, which is the same.) For all bags used below we also built the actual crossing sequence by computer search and replayed it, for $3\le c\le12$ (\texttt{bags.py}).
+
+\begin{lemma}\label{lem:cycle}
+For $c\ge3$ and $n\ge2c+3$, $T_c(n)\le T_c(n-2c)+2n-c+9$.
+\end{lemma}
+
+\begin{proof}
+First do the six trips described after Corollary~\ref{cor:rec}: $\{1,2,3\}$ over, $1$ back, $\{n-c+1,\dots,n\}$ over, $2$ back, $\{n-2c+1,\dots,n-c\}$ over, $3$ back. This takes $2n-c+9$ minutes and leaves exactly people $1,\dots,n-2c$ on the start side with the torch.
+\end{proof}
+
+\paragraph{Base schedules.} Write $A_j[x,y]=\{1,\dots,j\}\cup\{x,x+1,\dots,y\}$ (a group of $j$ fast ``runners'' escorting $x,\dots,y$) and $B[y]=\{y-c+1,\dots,y\}$ (a full group of slow people). Table~\ref{tab:base} gives, for $c\ge4$ and every $n$ with $5c-5\le n\le 7c-6$, a bag whose cost is $F_c(n)$. In each case one adds copies of $\{1,2\}$ (when the runners are $1,2$) or of $\{1,2,3\}$, plus at most one $\{1,2\}$ (when the runners are $1,2,3$), until $\sum(|G|-1)=n-1$; the number of copies needed is $0$, $1$ or $2$. A group $A_j[x,y]$ with $y<x$ is simply omitted.
+
+\begin{table}[h]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}lll@{}}
+\toprule
+$n$ & groups (besides the added $\{1,2\}$ / $\{1,2,3\}$) & cost $=F_c(n)$\\
+\midrule
+$5c-5$ & $A_2[3,c-1],\ A_2[c,2c-3],\ A_2[2c-2,3c-5],\ B[4c-5],\ B[5c-5]$ & $15c-13$\\
+$5c-4$ & $A_2[3,c],\ A_2[c+1,2c-2],\ A_2[2c-1,3c-4],\ B[4c-4],\ B[5c-4]$ & $15c-8$\\
+$5c-3+t$, $0\le t\le c-3$ & $A_2[3,t+2],\ A_2[t+3,t+c],\ A_2[t+c+1,t+2c-2],\ A_1[t+2c-1,t+3c-3],$ & $15c+6t-2$\\
+ & $B[t+4c-3],\ B[t+5c-3]$ & \\
+$6c-5$ & $A_2[3,c],\ A_2[c+1,2c-2],\ A_2[2c-1,3c-4],\ A_1[3c-3,4c-5],\ B[5c-5],\ B[6c-5]$ & $21c-14$\\
+$6c-4$ & $A_2[3,c],\ A_2[c+1,2c-2],\ A_2[2c-1,3c-4],\ B[4c-4],\ B[5c-4],\ B[6c-4]$ & $21c-7$\\
+$6c-3+t$, $0\le t\le c-4$ & $A_3[4,t+3],\ A_3[t+4,t+c],\ A_2[t+c+1,t+2c-2],\ A_1[t+2c-1,t+3c-3],$ & $21c+7t-1$\\
+ & $B[t+4c-3],\ B[t+5c-3],\ B[t+6c-3]$ & \\
+$7c-6$ & $A_3[4,c],\ A_3[c+1,2c-3],\ A_2[2c-2,3c-5],\ A_1[3c-4,4c-6],$ & $28c-22$\\
+ & $B[5c-6],\ B[6c-6],\ B[7c-6]$ & \\
+\bottomrule
+\end{tabular}}
+\caption{Optimal bags for the base range $5c-5\le n\le 7c-6$, $c\ge4$.}\label{tab:base}
+\end{table}
+
+\begin{proposition}\label{prop:base}
+For $c\ge4$ and $5c-5\le n\le 7c-6$, the bag in Table~\ref{tab:base} is a bag in the sense above and its cost equals $F_c(n)$. For $c=3$ and $7\le n\le 12$ the bags
+$\{123,124,567\}$, $\{123,145,678,12\}$, $\{123,124,156,789\}$, $\{123,124,567,8\,9\,10,12\}$, $\{123,124,125,678,9\,10\,11\}$, $\{123,124,156,789,10\,11\,12,12\}$ have costs $17,22,26,32,37,43=F_3(n)$.
+\end{proposition}
+
+\begin{proof}
+It is convenient to compute costs with the following identity. If the runners are $1,\dots,k$, every group has the form $\{1,\dots,j\}\cup S$ with $S$ a set of non-runners, and $\sum_G (j_G-1)=k-1$ (which is equivalent to $\sum(|G|-1)=n-1$), then
+\begin{equation}\label{eq:identity}
+\text{cost}=\frac{7-(k-4)^2}{2}+\sum_{G}\Bigl(\max G+\frac{(j_G-4)^2-7}{2}\Bigr),
+\end{equation}
+because $\sum_i i(f_i-1)=\sum_G j_G(j_G+1)/2-k(k+1)/2$, and adding $\frac92\bigl(k-1-\sum_G(j_G-1)\bigr)=0$ gives \eqref{eq:identity}. For each row of the table the groups, their maxima and their $j_G$ are explicit, so the cost is a polynomial in $c$ and $t$; we computed it symbolically (\texttt{symb.py}) and compared with $F_c(n)$, which in each row is also an explicit polynomial (in the rows with parameter $t$, $g$ is fixed and $d$ is linear in $t$). For example, in the row $n=6c-3+t$ we have $n+3=6c+t$, so $g=6$, $d=t\le c-4$ and $F_c(n)=21c+7t-10+9$. We also checked every row numerically for $4\le c\le400$, together with the conditions defining a bag. The case $c=3$ is a direct computation.
+\end{proof}
+
+\section{Proof of Theorem~\ref{thm:main}}
+
+Let $n\ge n_c$; then $n\ge 3c-3$, so by Theorem~\ref{thm:lower} and Lemma~\ref{lem:U}, $T_c(n)\ge F_c(n)$. For the upper bound, if $n_c\le n<n_c+2c$ use Proposition~\ref{prop:base} and Lemma~\ref{lem:bt}. If $n\ge n_c+2c$, by induction and Lemma~\ref{lem:cycle}, $T_c(n)\le F_c(n-2c)+2n-c+9=F_c(n)$, using the computation in the proof of Corollary~\ref{cor:rec}. \qed
+
+\section{Computational checks}
+
+All code is in the repository accompanying this note.
+\begin{itemize}
+\item \texttt{dij.c}: exact shortest path over all states (any group sizes, any return groups). It reproduces Thang Pang Ern and Sayson's table of $T_4(n)$, $n\le20$, and their $T_3(n)$; we used it for $n\le 15$ and $c\le7$.
+\item \texttt{bag.py}: integer program over bags (any forward and return groups); agrees with the above and with $F_c$ for $c=4$, $n\le29$.
+\item \texttt{model2.cpp}: dynamic programming over the ``ordered bags'' of Backhouse and Truong~\cite[Theorems 2--3]{bt15}; it agrees with the exact methods where they overlap, and with $F_c(n)$ for all $n\ge n_c$, $n\le 20c$, $3\le c\le40$. It also shows the threshold $n_c$ is sharp for $4\le c\le40$.
+\item \texttt{colgen.py}, \texttt{lpcmp.py}: the linear-programming relaxation. Its optimum $L_c(n)$ satisfies $\lceil L_c(n)\rceil=T_c(n)$ for $2c+3\le n\le 9c$, $4\le c\le8$.
+\item \texttt{verify\_dual.py}, \texttt{qtable.py}: Lemma~\ref{lem:feasible}. \texttt{symb.py}, \texttt{bags.py}: Proposition~\ref{prop:base}.
+\end{itemize}
+
+\section{Remarks and open questions}
+\begin{enumerate}
+\item Below the threshold ($c<n<n_c$) the optimum is still given by an ordered bag but the lower bound $3+\lceil U_c(n)\rceil$ is not attained; there are too few slow people to pay for three runners, and schedules with two runners win. A closed description of $T_c(n)$ for $c<n<5c-5$ would complete the picture.
+\item The weights $u$ say that a slow person in position $i$ ``costs'' about $(i+4.5+(c-1)/2)/c$; the three fastest people carry the $9/2$ overhead of each slow group. It would be interesting to find similar weights for other natural sequences of crossing times, for example $t_i=2^{i}$ or $t_i=i^2$.
+\end{enumerate}
+
+\section*{Use of AI and contributions}
+Uchral Nyam-Osor asked for a recently published open problem in a school subject and for an attempt to solve it. Claude, an AI model made by Anthropic, chose the problem, did the mathematics, wrote and ran the code, and wrote this note. The human author is responsible for any use of the note. The results have not yet been checked by the authors of \cite{pes} or by a referee.
+
+\begin{thebibliography}{9}
+\bibitem{bt08} R.~Backhouse, The capacity-$C$ torch problem, in \emph{Mathematics of Program Construction}, LNCS 5133, Springer, 2008, 57--78.
+\bibitem{bt15} R.~Backhouse and H.~Truong, The capacity-$C$ torch problem, \emph{Sci.\ Comput.\ Program.} 102 (2015), 76--107.
+\bibitem{pes} Thang Pang Ern and G.~Sayson, Some generalizations of the bridge and torch problem, \emph{J.\ Integer Seq.} 29 (2026), Article 26.5.6; arXiv:2608.05190.
+\bibitem{rote} G.~Rote, Crossing the bridge at night, \emph{Bull.\ EATCS} 78 (2002), 241--246.
+\bibitem{oeis} OEIS Foundation Inc., The On-Line Encyclopedia of Integer Sequences, sequences A078476 and A392834.
+\end{thebibliography}
+\end{document}

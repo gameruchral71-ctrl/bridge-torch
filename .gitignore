@@ -1,0 +1,6 @@
+code/model2
+code/dij
+__pycache__/
+*.aux
+*.log
+*.out
